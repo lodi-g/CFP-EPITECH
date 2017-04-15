@@ -8,16 +8,16 @@ The code you are about to see *is ugly*. It was written as a demonstration to ex
 Obviously, avoiding these security holes is very easy. See below for details.
 
 ## Summary
-1. [How](#how)
-2. [Why](#why)
-3. [Fix](#fix)
+1. [How](#how-to-use-it)
+2. [Why](#why-does-it-work)
+3. [Fix](#fix-these-security-holes)
 
 ## How (to use it)?
 The repository is composed of three main parts: the `JS` folder, the `PHP` folder and the `exploit.sh` file.
 
 #### Setup the Node server
 * Dependencies: MongoDB (really!)
-* Start the mongo daemon and import the `database.caca` file.
+* Start the mongo daemon and import the database with mongorestore.
 * Go to the JS directory, `npm install` and `node server.js`.
 * Done!
 
@@ -50,7 +50,8 @@ The exact object we send to bypass the login form is
 {
   "username": { "$gt": "" },
   "password": { "$gt": "" }
-}```
+}
+```
 
 When querying it, MongoDB will retrieve the first document (findOne() method) in the database. Why? The `$gt` operator specifies anything that is *greater than* an empty string. So basically... anything.
 
