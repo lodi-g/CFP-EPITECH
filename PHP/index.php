@@ -54,8 +54,6 @@ $req = "SELECT * FROM users WHERE username = '$name' AND password = '$pwd'";
 $res = $db->query($req);
 $data = $res->fetch();
 
-var_dump($data);
-
 if (!$data)
   header("Location: index.php?e");
 
