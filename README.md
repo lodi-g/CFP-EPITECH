@@ -1,10 +1,10 @@
-# SQL Injections with MongoDB
+# MongoDB exploitation - Injections
 
 *When the code is ugly, it is probably exploitable.*
 
 ## Introduction
 
-The code you are about to see *is ugly*. It was written as a demonstration to express how using Node.JS along with MongoDB is NO MORE secured than PHP if you don't care about securing it.
+The code you are about to see *is ugly*. It was written as a demonstration to express how using Node.JS along with MongoDB is NOT MORE secured than PHP if you don't care about securing it.
 Obviously, avoiding these security holes is very easy. See below for details.
 
 ## Summary
@@ -60,3 +60,4 @@ When querying it, MongoDB will retrieve the first document (findOne() method) in
 So how would one go about fixing these ugly security holes? One simple principle: Do not trust user input.
 
 One could use PDO's prepared statements or could parse and verify user input before sending it to the database.
+I also highly suggest you to use Mongoose for MongoDB as it can help avoiding these security holes.
