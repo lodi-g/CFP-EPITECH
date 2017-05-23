@@ -13,24 +13,15 @@ Obviously, avoiding these security holes is very easy. See below for details.
 3. [Fix](#fix-these-security-holes)
 
 ## How (to use it)?
-The repository is composed of three main parts: the `JS` folder, the `PHP` folder and the `exploit.sh` file.
 
-#### Setup the Node server
-* Dependencies: MongoDB (really!)
-* Start the mongo daemon and import the database with mongorestore.
-* Go to the JS directory, `npm install` and `node server.js`.
-* Done!
+Don't install MongoDB, Node.js, PHP, Apache or MySQL on your computer,
+this is unnecessaray since everything is automated.
 
-#### Setup the PHP webpage
-* Dependancies: an HTTP server (nginx master race), the pdo_mysql addon.
-* Import the `database.sql` file.
-* Move the `index.php` file wherever your HTTP server tells you to move it.
-* Done!
+Make sure [Docker](https://docs.docker.com/engine/installation) and
+[docker-compose](https://docs.docker.com/compose/install/) are set up
+properly on your computer.
 
-#### Start injecting
-* `./inject.sh`
-* Look closely at the HTML retrieved by cURL for each request sent.
-* Done ;)
+Then, simply run `./run.sh` to start both exploits.
 
 ## Why (does it work)?
 

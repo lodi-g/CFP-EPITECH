@@ -3,44 +3,65 @@ const bodyParser = require("body-parser");
 const mongo      = require("mongodb").MongoClient;
 
 const app = express();
-var db;
+let db;
 
 app.set("view engine", "pug");
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   return res.render("index", { error: false });
 })
 
 app.post("/", (req, res) => {
-  var obj = {
-    username: req.body.username,
+  const obj = {
+    username: req.body.username, // Here is the big security issue
     password: req.body.password
   }
 
   db.collection("users").findOne(obj, (err, user) => {
-
     if (user === null)
-      return res.render("index", { error: true });
+      return res.status(500).render("index", { error: true });
 
     res.render("loggedin", { name: user.username });
   });
 })
 
 
+const loadFixtures = () =>
+  db.collection("users").insertMany([
+    {
+      username: "admin",
+      password: "admin",
+    },
+    {
+      username: "user",
+      password: "password",
+    },
+  ]);
 
-let dsn = "mongodb://localhost:27017/foo";
-mongo.connect(dsn, (err, database) => {
-  if (err)
-    throw new Error(`Couldn't connect to the database: ${err}`);
+const wait = time =>
+    new Promise(resolve => setTimeout(resolve, time))
 
-  db = database;
+const connectToDb = async () => {
+  try {
+    db = await mongo.connect("mongodb://mongo:27017/foo");
+  } catch (error) {
+    console.error(error.message)
+    await wait(1000)
+    return await connectToDb()
+  }
 
-  app.listen(3000, (err) => {
-    if (err)
-      throw new Error(`Couldn't start server: ${err}`);
+  await loadFixtures();
+}
 
-    console.log("Successfully started server on port 3000!");
+connectToDb()
+  .then(() => {
+    app.listen(3000, err => {
+      if (err)
+        throw new Error(`Couldn't start server: ${err}`);
+
+      console.log("Successfully started server on port 3000!");
+    })
   })
-})
+  .catch(console.error);
