@@ -1,0 +1,64 @@
+version: '2'
+
+services:
+
+  mongo:
+    image: mongo:3.4
+    logging:
+      driver: "none"
+    networks:
+      - js
+
+  js:
+    build:
+      context: ./JS
+    networks:
+      - default
+      - js
+    ports:
+      - "9000:80"
+    links:
+      - mongo:mongo
+
+  mariadb:
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    image: mariadb:10.1
+    networks:
+      - php
+
+  mariadb-fixtures-loader:
+    volumes:
+      - ./PHP/database.sql:/database.sql:ro
+      - ./PHP/load-fixtures.sh:/load-fixtures.sh:ro
+    image: mariadb:10.1
+    command: "sh /load-fixtures.sh"
+    networks:
+      - php
+    links:
+      - mariadb:mariadb
+
+  php:
+    build:
+      context: ./PHP
+    networks:
+      - default
+      - php
+    ports:
+      - "9001:80"
+    links:
+      - mariadb:mariadb
+      - mariadb-fixtures-loader:mariadb-fixtures-loader # This is a hack
+
+  inject:
+    build:
+      context: ./inject
+    links:
+      - js:js
+      - php:php
+
+networks:
+  js:
+    driver: bridge
+  php:
+    driver: bridge
